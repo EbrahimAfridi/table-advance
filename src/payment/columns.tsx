@@ -1,7 +1,13 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
-import { MoreHorizontal } from "lucide-react";
-import { ArrowUpDown } from "lucide-react";
+import {
+  Check,
+  ChevronsUpDown,
+  CircleX,
+  ClockAlert,
+  Loader,
+  MoreHorizontal,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -51,16 +57,25 @@ export const columns: ColumnDef<Payment>[] = [
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      const statusClass = {
-        pending: "text-yellow-400",
-        processing: "text-blue-400",
-        success: "text-green-400",
-        failed: "text-red-400",
-      }[status];
+      const getStatusIcon = (status: string) => {
+        switch (status) {
+          case "pending":
+            return <ClockAlert className="mr-1 size-3" />;
+          case "processing":
+            return <Loader className="mr-1 size-3" />;
+          case "success":
+            return <Check className="mr-1 size-3" />;
+          case "failed":
+            return <CircleX className="mr-1 size-3" />;
+          default:
+            return <Loader className="mr-1 size-3" />;
+        }
+      };
 
       return (
-        <div className={`text-center font-medium ${statusClass}`}>
-          {status.charAt(0).toUpperCase() + status.slice(1)}
+        <div className="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground">
+          {getStatusIcon(status)}
+          <span>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
         </div>
       );
     },
@@ -75,7 +90,7 @@ export const columns: ColumnDef<Payment>[] = [
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-0"
           >
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ChevronsUpDown className="ml-2 h-4 w-4 hover:cursor-pointer" />
           </button>
         </div>
       );
@@ -95,7 +110,7 @@ export const columns: ColumnDef<Payment>[] = [
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-0"
           >
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ChevronsUpDown className="ml-2 h-4 w-4 hover:cursor-pointer" />
           </button>
         </div>
       );
