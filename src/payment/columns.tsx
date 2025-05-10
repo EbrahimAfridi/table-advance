@@ -1,5 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
+
 import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type Payment = {
   id: number;
@@ -19,6 +22,30 @@ export type Payment = {
 };
 
 export const columns: ColumnDef<Payment>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <div className="text-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "status",
     header: () => <div className="text-center">Status</div>,
@@ -40,7 +67,19 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "email",
-    header: () => <div className="text-center">Email</div>,
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center justify-center">
+          <span>Email</span>
+          <button
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-0"
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const email = row.getValue("email") as string;
       return <div className="text-center font-medium">{email}</div>;
@@ -48,7 +87,19 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-center">Amount</div>,
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center justify-center">
+          <span>Amount</span>
+          <button
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-0"
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const amount = row.getValue("amount") as string;
       return <div className="text-center font-medium">{amount}</div>;
@@ -69,7 +120,9 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id.toString())}
+              onClick={() =>
+                navigator.clipboard.writeText(payment.id.toString())
+              }
             >
               Copy payment ID
             </DropdownMenuItem>
