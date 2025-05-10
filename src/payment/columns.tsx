@@ -19,13 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-
-export type Payment = {
-  id: number;
-  amount: string;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
+import type { Payment } from "@/types";
 
 export const columns: ColumnDef<Payment>[] = [
   {
